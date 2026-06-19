@@ -59,4 +59,34 @@ describe('loading button demo', () => {
     expect(screen.getByRole('button', { name: /批量操作/ })).toBeEnabled()
     expect(screen.getByText('已完成 3 / 3')).toBeInTheDocument()
   })
+
+  it('filters repeated batch triggers during the cooldown window', async () => {
+    vi.useFakeTimers()
+
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: /批量操作/ }))
+
+    await act(async () => {
+      vi.advanceTimersByTime(2500)
+    })
+
+    expect(screen.getByRole('button', { name: /批量操作/ })).toBeEnabled()
+
+    fireEvent.click(screen.getByRole('button', { name: /批量操作/ }))
+
+    expect(screen.getByText('已过滤重复触发，请稍后再试。')).toBeInTheDocument()
+    within(screen.getByLabelText('批量任务列表')).getAllByRole('button').forEach((button) => {
+      expect(button).toBeEnabled()
+      expect(button).toHaveAttribute('aria-busy', 'false')
+    })
+
+    await act(async () => {
+      vi.advanceTimersByTime(500)
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /批量操作/ }))
+
+    expect(screen.getByRole('button', { name: /批量处理中/ })).toBeDisabled()
+  })
 })

@@ -94,6 +94,17 @@
   font-size: 14px;
 }
 
+.rate-limit-message {
+  display: inline-flex;
+  margin-top: 12px;
+  padding: 8px 10px;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 14px;
+  font-weight: 700;
+}
 .batch-actions {
   display: flex;
   align-items: center;

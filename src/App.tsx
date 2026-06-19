@@ -12,6 +12,8 @@ type DemoTask = {
   status: TaskStatus
 }
 
+const BATCH_COOLDOWN_MS = 3000
+
 const initialTasks: DemoTask[] = [
   { id: 'notice', label: '发送通知', loadingText: '发送中', duration: 900, status: 'idle' },
   { id: 'approve', label: '批量同意', loadingText: '处理中', duration: 1600, status: 'idle' },
@@ -27,6 +29,8 @@ function wait(duration: number) {
 function App() {
   const [tasks, setTasks] = useState<DemoTask[]>(initialTasks)
   const [batchLoading, setBatchLoading] = useState(false)
+  const [lastBatchStartedAt, setLastBatchStartedAt] = useState<number | null>(null)
+  const [rateLimitMessage, setRateLimitMessage] = useState('')
 
   const doneCount = useMemo(
     () => tasks.filter((task) => task.status === 'done').length,
@@ -49,8 +53,16 @@ function App() {
   }
 
   async function runBatch() {
+    const now = Date.now()
     if (batchLoading) return
 
+    if (lastBatchStartedAt !== null && now - lastBatchStartedAt < BATCH_COOLDOWN_MS) {
+      setRateLimitMessage('已过滤重复触发，请稍后再试。')
+      return
+    }
+
+    setLastBatchStartedAt(now)
+    setRateLimitMessage('')
     setBatchLoading(true)
     setTasks((current) => current.map((task) => ({ ...task, status: 'loading' })))
 
@@ -62,23 +74,25 @@ function App() {
 
   function resetTasks() {
     setBatchLoading(false)
+    setLastBatchStartedAt(null)
+    setRateLimitMessage('')
     setTasks(initialTasks)
   }
 
   return (
     <main className="demo-page">
       <section className="demo-hero">
-        <p className="eyebrow">React Button Component</p>
-        <h1>Loading 状态与批量操作演示</h1>
+        <p className="eyebrow">React 按钮组件</p>
+        <h1>Loading 状态、批量操作与限频过滤</h1>
         <p>
           单个按钮点击后进入 loading，异步完成后恢复；批量操作会让所有按钮同时进入
-          loading，并在全部任务完成后统一恢复。
+          loading，并在全部任务完成后统一恢复。批量触发支持 3 秒限频过滤，避免短时间重复提交。
         </p>
       </section>
 
       <section className="demo-panel" aria-labelledby="single-title">
         <div>
-          <p className="eyebrow">Single Action</p>
+          <p className="eyebrow">单条操作</p>
           <h2 id="single-title">单条记录按钮</h2>
           <p>点击任意按钮，只会影响当前记录，其他按钮仍可操作。</p>
         </div>
@@ -104,11 +118,13 @@ function App() {
 
       <section className="demo-panel demo-panel--split" aria-labelledby="batch-title">
         <div>
-          <p className="eyebrow">Batch Action</p>
+          <p className="eyebrow">批量操作</p>
           <h2 id="batch-title">批量按钮事件</h2>
           <p>
             批量操作用 <code>Promise.all</code> 等待全部异步任务结束，再把整体状态恢复。
+            3 秒内重复点击会被限频过滤，不会重新发起任务。
           </p>
+          {rateLimitMessage ? <p className="rate-limit-message">{rateLimitMessage}</p> : null}
         </div>
 
         <div className="batch-actions">
