@@ -1,0 +1,136 @@
+.demo-page {
+  width: min(1040px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 56px 0;
+}
+
+.demo-hero {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.demo-hero h1,
+.demo-panel h2,
+.task-card h3 {
+  margin: 0;
+  color: #111827;
+  letter-spacing: 0;
+}
+
+.demo-hero h1 {
+  max-width: 760px;
+  font-size: 42px;
+  line-height: 1.15;
+}
+
+.demo-hero p:last-child,
+.demo-panel p,
+.task-card p {
+  color: #4b5563;
+}
+
+.demo-hero p:last-child {
+  max-width: 760px;
+  margin: 16px 0 0;
+}
+
+.demo-panel {
+  margin-top: 18px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.demo-panel--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+}
+
+.demo-panel h2 {
+  font-size: 24px;
+}
+
+.demo-panel p {
+  margin: 8px 0 0;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.task-card {
+  display: flex;
+  min-height: 132px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.task-card h3 {
+  font-size: 18px;
+}
+
+.task-card p {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.batch-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-text {
+  min-width: 88px;
+  color: #374151;
+  font-weight: 700;
+}
+
+code {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #eef2ff;
+  color: #1e40af;
+  font-size: 0.9em;
+}
+
+@media (max-width: 760px) {
+  .demo-page {
+    width: min(100% - 24px, 1040px);
+    padding: 32px 0;
+  }
+
+  .demo-hero h1 {
+    font-size: 32px;
+  }
+
+  .task-grid,
+  .demo-panel--split {
+    grid-template-columns: 1fr;
+  }
+
+  .batch-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
